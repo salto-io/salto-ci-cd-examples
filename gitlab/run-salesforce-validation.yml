@@ -2,7 +2,7 @@ stages:
   - Run Salesforce Validation
 
 variables:
-  SALTO_API_TOKEN: "phsyTlaXVj3vdaFbvidd_AsCMUCqjBIJ9RwBDOyLGk8EZ"
+  SALTO_API_TOKEN: "SALTO_API_TOKEN_HERE"
 
 run-salesforce-validation:
   stage: Run Salesforce Validation
