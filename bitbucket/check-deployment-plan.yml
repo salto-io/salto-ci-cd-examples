@@ -7,7 +7,7 @@ pipelines:
           name: 'Check Deployment Plan'
           script:
             - echo "Downloading and installing Salto CLI.."
-            - curl https://salto-saas-cli.s3.us-east-2.amazonaws.com/release/1.0.0/linux-x64.tar.gz --output linux-x64.tar.gz
+            - curl https://cli.salto.io/release/1.0.0/linux-x64.tar.gz --output linux-x64.tar.gz
             - tar xvzf linux-x64.tar.gz
             - echo "Checking deployment plan.."
             - export API_TOKEN=$SALTO_API_TOKEN

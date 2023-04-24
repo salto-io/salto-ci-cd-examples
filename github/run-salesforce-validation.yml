@@ -23,7 +23,7 @@ jobs:
 
       - name: Install Salto CLI
         run: |
-          curl https://salto-saas-cli.s3.us-east-2.amazonaws.com/release/1.0.0/linux-x64.tar.gz --output linux-x64.tar.gz
+          curl https://cli.salto.io/release/1.0.0/linux-x64.tar.gz --output linux-x64.tar.gz
           tar xvzf linux-x64.tar.gz
         
       - name: Run Deploy Validation
