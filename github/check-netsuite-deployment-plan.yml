@@ -1,0 +1,36 @@
+name: Validate
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  Validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Get branch name and save to env"
+        env:
+          IS_PR: ${{ github.EVENT_NAME == 'pull_request' }}
+        run: |
+          if ${IS_PR}; then
+            BRANCH_NAME="${GITHUB_HEAD_REF}"
+          else
+            BRANCH_NAME="${GITHUB_REF##*/}"
+          fi
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+
+      - name: Install Salto CLI
+        run: |
+          curl https://salto-saas-cli.s3.us-east-2.amazonaws.com/release/1.0.0/linux-x64.tar.gz --output linux-x64.tar.gz
+          tar xvzf linux-x64.tar.gz
+        
+      - name: Run Deploy Validation
+        run: |
+          ./salto-cloud deployment plan -b ${BRANCH_NAME}
+        env: 
+          API_TOKEN: ${{ secrets.SALTO_API_TOKEN }}
+
+
+
