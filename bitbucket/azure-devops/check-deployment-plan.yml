@@ -1,0 +1,18 @@
+trigger:
+- salto_deployment_after_*
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- bash: |
+    echo "Downloading and installing Salto CLI.."
+    curl https://cli.salto.io/release/1.0.0/linux-x64.tar.gz --output linux-x64.tar.gz
+    tar xvzf linux-x64.tar.gz
+    echo "Checking Deployment Plan.."
+    ./salto-cloud deployment plan -b $SOURCE_BRANCH
+  displayName: 'Check Deployment Plan'
+  env:
+    API_TOKEN: $(SALTO_API_TOKEN)
+    SOURCE_BRANCH: $(Build.SourceBranchName)
+    
