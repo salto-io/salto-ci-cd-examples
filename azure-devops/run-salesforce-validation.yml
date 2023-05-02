@@ -13,6 +13,6 @@ steps:
     ./salto-cloud deployment validate -b $SOURCE_BRANCH -C 'salesforce.client.deploy.testLevel=RunLocalTests'
   displayName: 'Run Salesforce Validation'
   env:
-    API_TOKEN: $(SALTO_API_TOKEN)
+    SALTO_API_TOKEN: $(SALTO_API_TOKEN)
     SOURCE_BRANCH: $(Build.SourceBranchName)
     

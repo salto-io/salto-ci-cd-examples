@@ -30,7 +30,7 @@ jobs:
         run: |
           ./salto-cloud deployment validate -b ${BRANCH_NAME} -C 'salesforce.client.deploy.testLevel=RunLocalTests'
         env: 
-          API_TOKEN: ${{ secrets.SALTO_API_TOKEN }}
+          SALTO_API_TOKEN: ${{ secrets.SALTO_API_TOKEN }}
 
 
 

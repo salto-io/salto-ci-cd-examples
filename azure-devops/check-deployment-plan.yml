@@ -13,6 +13,6 @@ steps:
     ./salto-cloud deployment plan -b $SOURCE_BRANCH
   displayName: 'Check Deployment Plan'
   env:
-    API_TOKEN: $(SALTO_API_TOKEN)
+    SALTO_API_TOKEN: $(SALTO_API_TOKEN)
     SOURCE_BRANCH: $(Build.SourceBranchName)
     

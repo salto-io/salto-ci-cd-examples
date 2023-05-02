@@ -11,7 +11,6 @@ run-salesforce-validation:
     - curl https://cli.salto.io/release/1.0.0/linux-x64.tar.gz --output linux-x64.tar.gz
     - tar xvzf linux-x64.tar.gz
     - echo "Running Salesforce validation.."
-    - export API_TOKEN=$SALTO_API_TOKEN
     - ./salto-cloud deployment validate -b $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME -C 'salesforce.client.deploy.testLevel=RunLocalTests'
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
