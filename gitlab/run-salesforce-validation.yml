@@ -8,7 +8,7 @@ run-salesforce-validation:
   stage: Run Salesforce Validation
   script:
     - echo "Downloading and installing Salto CLI.."
-    - curl https://cli.salto.io/release/1.0.0/linux-x64.tar.gz --output linux-x64.tar.gz
+    - curl https://cli.salto.io/release/1/linux-x64.tar.gz --output linux-x64.tar.gz
     - tar xvzf linux-x64.tar.gz
     - echo "Running Salesforce validation.."
     - ./salto-cloud deployment validate -b $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME -C 'salesforce.client.deploy.testLevel=RunLocalTests'
