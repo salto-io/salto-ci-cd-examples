@@ -13,5 +13,5 @@ run-salesforce-validation:
     - echo "Checking Deployment Plan.."
     - ./salto-cloud deployment plan -b $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_COMMIT_REF_NAME =~ /^salto_deployment_after.*/'
       allow_failure: false
