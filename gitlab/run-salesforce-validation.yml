@@ -13,5 +13,5 @@ run-salesforce-validation:
     - echo "Running Salesforce validation.."
     - ./salto-cloud deployment validate -b $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME -C 'salesforce.client.deploy.testLevel=RunLocalTests'
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_COMMIT_REF_NAME =~ /^salto_deployment_after.*/'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_COMMIT_REF_NAME =~ /^salto/deployments/after/.*/'
       allow_failure: false

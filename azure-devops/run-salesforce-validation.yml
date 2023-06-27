@@ -1,5 +1,5 @@
 trigger:
-- salto_deployment_after_*
+- salto/deployments/after/*
 
 pool:
   vmImage: ubuntu-latest
