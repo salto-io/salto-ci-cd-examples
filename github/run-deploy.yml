@@ -1,0 +1,20 @@
+name: Deploy
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  Deploy:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Salto CLI
+        run: |
+          curl https://cli.salto.io/release/1/linux-x64.tar.gz --output linux-x64.tar.gz
+          tar xvzf linux-x64.tar.gz
+        
+      - name: Run Deploy
+        run: |
+          ./salto-cloud deployment deploy -b ${{ github.event.pull_request.head.ref }}
+        env: 
+          SALTO_API_TOKEN: ${{ secrets.SALTO_API_TOKEN }}
