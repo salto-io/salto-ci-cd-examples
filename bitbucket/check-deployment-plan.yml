@@ -10,4 +10,4 @@ pipelines:
             - curl https://cli.salto.io/release/1/linux-x64.tar.gz --output linux-x64.tar.gz
             - tar xvzf linux-x64.tar.gz
             - echo "Checking deployment plan.."
-            - ./salto-cloud deployment plan -b $BITBUCKET_BRANCH 
+            - ./salto-cloud deployment preview -b $BITBUCKET_BRANCH 

@@ -11,7 +11,7 @@ run-salesforce-validation:
     - curl https://cli.salto.io/release/1/linux-x64.tar.gz --output linux-x64.tar.gz
     - tar xvzf linux-x64.tar.gz
     - echo "Checking Deployment Plan.."
-    - ./salto-cloud deployment plan -b $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+    - ./salto-cloud deployment preview -b $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_COMMIT_REF_NAME =~ /^salto\/deployments\/after\/.*/'
       allow_failure: false

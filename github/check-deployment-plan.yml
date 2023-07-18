@@ -28,7 +28,7 @@ jobs:
         
       - name: Check Deployment Plan
         run: |
-          ./salto-cloud deployment plan -b ${BRANCH_NAME}
+          ./salto-cloud deployment preview -b ${BRANCH_NAME}
         env: 
           API_TOKEN: ${{ secrets.SALTO_API_TOKEN }}
 

@@ -10,7 +10,7 @@ steps:
     curl https://cli.salto.io/release/1/linux-x64.tar.gz --output linux-x64.tar.gz
     tar xvzf linux-x64.tar.gz
     echo "Checking Deployment Plan.."
-    ./salto-cloud deployment plan -b $SOURCE_BRANCH
+    ./salto-cloud deployment preview -b $SOURCE_BRANCH
   displayName: 'Check Deployment Plan'
   env:
     SALTO_API_TOKEN: $(SALTO_API_TOKEN)
