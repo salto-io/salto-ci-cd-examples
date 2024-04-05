@@ -1,0 +1,25 @@
+pool:
+  vmImage: ubuntu-latest
+
+schedules:
+- cron: '0,15,30,45 * * * *'           # run every 15 minutes
+  displayName: 'Every 15 min triggers'
+  branches:
+    include:
+    - main                             # could be any valid branch
+  always: true                         # ensures it runs on every scheduled execution
+                                       # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml#batch-considerations-for-scheduled-triggers
+
+
+steps:
+- script: env | sort                   # good for troubleshooting
+  displayName: 'Sorted Environment Variables'
+
+- script: | 
+    echo Check python version.
+    python3 --version                  
+    python3 -u pipelines/deploy_approved_changes.py
+  displayName: 'Run python script to deploy approved changes'  
+  env:
+    ADO_AUTH_TOKEN: $(ADO_AUTH_TOKEN)  # must be explicitlly set because the variable is secret
+    SALTO_API_TOKEN: $(SALTO_API_TOKEN)# must be explicitlly set because the variable is secret
