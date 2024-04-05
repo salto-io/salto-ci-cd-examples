@@ -21,5 +21,5 @@ steps:
     python3 -u pipelines/deploy_approved_changes.py
   displayName: 'Run python script to deploy approved changes'  
   env:
-    ADO_AUTH_TOKEN: $(ADO_AUTH_TOKEN)  # must be explicitlly set because the variable is secret
-    SALTO_API_TOKEN: $(SALTO_API_TOKEN)# must be explicitlly set because the variable is secret
+    ADO_AUTH_TOKEN: $(ADO_AUTH_TOKEN)  
+    SALTO_API_TOKEN: $(SALTO_API_TOKEN)
