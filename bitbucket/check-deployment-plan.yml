@@ -2,7 +2,7 @@ image: atlassian/default-image:3
 
 pipelines:
   branches:
-    salto/deployments/after/*:
+    salto/after/env/**:
       - step:
           name: 'Check Deployment Plan'
           script:
