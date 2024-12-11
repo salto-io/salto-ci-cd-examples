@@ -7,30 +7,17 @@ on:
       - synchronize
 
 jobs:
-  CheckDeploymentPlan:
+  Validate:
+    if: startsWith(github.event.pull_request.head.ref, 'salto/env/')
     runs-on: ubuntu-latest
     steps:
-      - name: "Get branch name and save to env"
-        env:
-          IS_PR: ${{ github.EVENT_NAME == 'pull_request' }}
-        run: |
-          if ${IS_PR}; then
-            BRANCH_NAME="${GITHUB_HEAD_REF}"
-          else
-            BRANCH_NAME="${GITHUB_REF##*/}"
-          fi
-          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
-
       - name: Install Salto CLI
         run: |
           curl https://cli.salto.io/release/1/linux-x64.tar.gz --output linux-x64.tar.gz
           tar xvzf linux-x64.tar.gz
         
-      - name: Check Deployment Plan
+      - name: Run Deploy Validation
         run: |
-          ./salto-cloud deployment preview -b ${BRANCH_NAME}
+          ./salto-cloud deployment preview -b ${GITHUB_HEAD_REF}
         env: 
           SALTO_API_TOKEN: ${{ secrets.SALTO_API_TOKEN }}
-
-
-

@@ -1,4 +1,4 @@
-name: Promote Example
+name: Promote
 
 on:
   pull_request_target:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   promote:
-    if: ${{ github.event.pull_request.merged == true }} # Ensure it only runs when the PR is merged
+    if: ${{ github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'salto/env/') }} # Ensure it only runs when the PR is merged
     runs-on: ubuntu-latest
 
     steps:
@@ -45,29 +45,14 @@ jobs:
           echo "::set-output name=pr_branch::$PR_BRANCH"
           echo "::set-output name=ticket_number::$TICKET_NUMBER"
 
-      - name: Check If PR Branch Contains 'deployment'
-        id: check_deployment
-        run: |
-          PR_BRANCH="${{ steps.extract_pr_details.outputs.pr_branch }}"
-          if [[ "$PR_BRANCH" == *"deployment"* ]]; then
-            echo "true" > result.txt
-          else
-            echo "false" > result.txt
-          fi
-          echo "::set-output name=contains_deployment::$(cat result.txt)"
-
       - name: Output Extracted Details
         run: |
           echo "The PR branch is ${{ steps.extract_pr_details.outputs.pr_branch }}"
           echo "The ticket number is ${{ steps.extract_pr_details.outputs.ticket_number }}"
 
       - name: Run Create Promotion
-        if: ${{ steps.check_deployment.outputs.contains_deployment == 'true' }}
         run: |
-          ./salto-cloud deployment create from-deployments -e "prod" -n ${{ steps.extract_pr_details.outputs.ticket_number }} -b ${{ steps.extract_pr_details.outputs.pr_branch }} -u true -t ${{ secrets.SALTO_API_TOKEN }}
+          ./salto-cloud deployment create from-deployments -e "prod" -n ${{ steps.extract_pr_details.outputs.ticket_number }} -b ${{ steps.extract_pr_details.outputs.pr_branch }} -u true
         env: 
           SALTO_API_TOKEN: ${{ secrets.SALTO_API_TOKEN }}
-          SALTO_URL: ${{ vars.SALTO_URL }}
-          AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
-          AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
-          GRAPHQL_URL: ${{ vars.GRAPHQL_URL }}
+

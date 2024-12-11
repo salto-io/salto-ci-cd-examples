@@ -1,6 +1,6 @@
 This folder includes [Salto](https://www.salto.io/) CI file examples for azure devops. 
 
-For more information about integrating Salto deployments with git please follow [this guide](https://help.salto.io/en/articles/7182069-integrating-pull-requests-and-automating-with-salto)
+For more information about integrating Salto deployments with git please follow [this guide](https://help.salto.io/en/articles/9909341-salto-git-integration-overview)
 
 ___
 

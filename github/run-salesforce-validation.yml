@@ -8,7 +8,7 @@ on:
 
 jobs:
   Validate:
-    if: startsWith(github.event.pull_request.head.ref, 'salto/env/')
+    if: startsWith(github.event.pull_request.head.ref, 'salto/env/') 
     runs-on: ubuntu-latest
     steps:
       - name: Install Salto CLI
