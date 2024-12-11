@@ -1,5 +1,5 @@
 trigger:
-- salto/after/env/*
+- salto/env/*
 
 pool:
   vmImage: ubuntu-latest

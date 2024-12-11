@@ -1,0 +1,58 @@
+name: Promote
+
+on:
+  pull_request_target:
+    types:
+      - closed
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  promote:
+    if: ${{ github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'salto/env/') }} # Ensure it only runs when the PR is merged
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Salto CLI
+        run: |
+          curl https://cli.salto.io/release/1/linux-x64.tar.gz --output linux-x64.tar.gz
+          tar xvzf linux-x64.tar.gz
+
+      - name: Extract PR Details
+        id: extract_pr_details
+        run: |
+          PR_BRANCH="${{ github.event.pull_request.head.ref }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+
+          echo "PR Branch: $PR_BRANCH"
+          echo "PR Title: $PR_TITLE"
+
+          # Extract ticket number from PR title
+          TICKET_NUMBER=$(echo "$PR_TITLE" | grep -oE 'PROJ-[0-9]+')
+
+          if [ -z "$TICKET_NUMBER" ]; then
+            echo "No ticket number found in PR title: $PR_TITLE"
+            exit 1
+          fi
+
+          echo "Extracted Ticket Number: $TICKET_NUMBER"
+
+          echo "::set-output name=pr_branch::$PR_BRANCH"
+          echo "::set-output name=ticket_number::$TICKET_NUMBER"
+
+      - name: Output Extracted Details
+        run: |
+          echo "The PR branch is ${{ steps.extract_pr_details.outputs.pr_branch }}"
+          echo "The ticket number is ${{ steps.extract_pr_details.outputs.ticket_number }}"
+
+      - name: Run Create Promotion
+        run: |
+          ./salto-cloud deployment create from-deployments -e "prod" -n ${{ steps.extract_pr_details.outputs.ticket_number }} -b ${{ steps.extract_pr_details.outputs.pr_branch }} -u true
+        env: 
+          SALTO_API_TOKEN: ${{ secrets.SALTO_API_TOKEN }}
+
