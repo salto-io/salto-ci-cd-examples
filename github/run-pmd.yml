@@ -1,0 +1,36 @@
+name: Run PMD
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  RunPmd:
+    if: startsWith(github.event.pull_request.head.ref, 'salto/env/') 
+    name: Static Code Analysis with PMD
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install PMD
+        uses: pmd/pmd-github-action@v2
+        id: pmd
+        with:
+          version: '7.9.0'
+          sourcePath: 'force-app/main/default/classes'
+          rulesets: 'pmd-rulesset.xml'
+
+      - name: Fail build if there are violations
+        if: ${{ steps.pmd.outputs.violations != 0 }}
+        run: exit 1
