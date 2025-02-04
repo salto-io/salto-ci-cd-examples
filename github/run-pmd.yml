@@ -29,7 +29,7 @@ jobs:
         with:
           version: '7.9.0'
           sourcePath: 'force-app/main/default/classes'
-          rulesets: 'pmd-rulesset.xml'
+          rulesets: 'pmd-ruleset.xml' # make sure to place pmd-ruleset.xml in your root folder and add it it to .forceignore file
 
       - name: Fail build if there are violations
         if: ${{ steps.pmd.outputs.violations != 0 }}
