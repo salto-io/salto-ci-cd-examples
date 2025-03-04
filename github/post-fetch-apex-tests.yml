@@ -1,0 +1,81 @@
+# To use this action please make sure to:
+# 1. Replace <YOUR_BRANCH_NAME> with the branch name of your salesforce environment
+# 2. For the "Authenticate with Salesforce" step make sure to:
+#    a. Create a salesforce app for oauth authentication, follow this guide: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm
+#    b. Create repository secrets SF_SECRET_KEY and SF_CONSUMER_KEY
+#    c. Replace <YOUR_SF_USERNAME> with your salesforce username
+#    d. Replace <SF_LOGIN_URL> with your salesforce URL, typically https://test.salesforce.com for sandbox and https://login.salesforce.com for production
+
+name: Run Apex Tests
+
+on:
+  push:
+    branches:
+      - '<YOUR_BRANCH_NAME>'
+
+jobs:
+  run-apex-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Get current and previous commit to compare
+
+      # Check commit message for Salto fetch URL
+      - name: Check commit message
+        id: check-message
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" =~ https://app\.salto\.io/goto\?target=fetch.* ]]; then
+            echo "has_salto_fetch_url=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_salto_fetch_url=false" >> $GITHUB_OUTPUT
+            echo "Skipping: No Salto fetch URL in commit message"
+          fi
+
+      # Check for Apex files
+      - name: Check for Apex files
+        id: check-files
+        if: steps.check-message.outputs.has_salto_fetch_url == 'true'
+        run: |
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+          if echo "$CHANGED_FILES" | grep -E '\.cls$|\.trigger$'; then
+            echo "has_apex_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_apex_changes=false" >> $GITHUB_OUTPUT
+            echo "Skipping: No Apex classes or triggers modified"
+          fi
+
+      - name: Install Salesforce CLI
+        if: steps.check-message.outputs.has_salto_fetch_url == 'true' && steps.check-files.outputs.has_apex_changes == 'true'
+        run: |
+          npm install --global @salesforce/cli
+          sf --version
+
+      - name: Authenticate with Salesforce
+        if: steps.check-message.outputs.has_salto_fetch_url == 'true' && steps.check-files.outputs.has_apex_changes == 'true'
+        run: |
+          echo "${{ secrets.SF_SECRET_KEY }}" > server.key
+          sf org login jwt \
+            --client-id ${{ secrets.SF_CONSUMER_KEY }} \
+            --jwt-key-file server.key \
+            --username <YOUR_SF_USERNAME> \
+            --instance-url <SF_LOGIN_URL> \
+            --set-default
+
+      - name: Run Apex Tests
+        if: steps.check-message.outputs.has_salto_fetch_url == 'true' && steps.check-files.outputs.has_apex_changes == 'true'
+        run: |
+          sf apex run test \
+            --test-level RunLocalTests \
+            --wait 10 \
+            --result-format human \
+            --output-dir test-results
+
+      - name: Upload Test Results
+        if: always() && steps.check-message.outputs.has_salto_fetch_url == 'true' && steps.check-files.outputs.has_apex_changes == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: apex-test-results
+          path: test-results/
